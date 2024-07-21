@@ -143,7 +143,7 @@ echo -e "\n=========== Create Log directory ================"
 #sudo mkdir /var/log/$OE_USER
 sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 
- su  $OE_USER
+ #sudo - su  $OE_USER
 # VENV
 #-------------------------
 echo -e "\n---- Setup python virtual environment ----"
@@ -191,8 +191,9 @@ echo -e "\n========= Create custom module directory ============"
 sudo su $OE_USER -c "mkdir $OE_HOME/resala-addons"
 #sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
-deactivate
-sudo su - root
+#deactivate
+#exit
+#sudo su - root
 
 echo -e "\n======= Setting permissions on home folder =========="
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/
