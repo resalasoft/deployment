@@ -88,7 +88,7 @@ echo -e "\n---- Setup python virtual environment ----"
 sudo pip3 install virtualenv
 cd $OE_HOME/
 virtualenv $OE_HOME_VENV
-sudo source "$OE_HOME_VENV/bin/activate"
+source "$OE_HOME_VENV/bin/activate"
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
