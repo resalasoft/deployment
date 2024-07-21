@@ -86,7 +86,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 16 ----"
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 17 ----"
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Jammy x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
@@ -110,6 +110,7 @@ sudo apt install -y git python3 python3-dev python3-pip build-essential wget pyt
 libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libatlas-base-dev libblas-dev liblcms2-dev \
 zlib1g-dev libjpeg8-dev libxrender1
 
+apt --fix-broken install
 # install libssl
 sudo apt -y install libssl-dev
 
@@ -142,6 +143,7 @@ echo -e "\n=========== Create Log directory ================"
 #sudo mkdir /var/log/$OE_USER
 sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 
+sudo su - $OE_USER
 # VENV
 #-------------------------
 echo -e "\n---- Setup python virtual environment ----"
