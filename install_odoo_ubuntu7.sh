@@ -192,7 +192,7 @@ sudo su $OE_USER -c "mkdir $OE_HOME/resala-addons"
 #sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 deactivate
-exit
+sudo su - root
 
 echo -e "\n======= Setting permissions on home folder =========="
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/
