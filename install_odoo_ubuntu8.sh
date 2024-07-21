@@ -144,6 +144,7 @@ echo -e "\n=========== Create Log directory ================"
 sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 
  #sudo - su  $OE_USER
+ #source /home/odoo/odoo-venv/bin/activate
 # VENV
 #-------------------------
 echo -e "\n---- Setup python virtual environment ----"
