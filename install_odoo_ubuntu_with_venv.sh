@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="odoo22"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
@@ -39,7 +39,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf-${OE_USER}"
 # Set the website name
-WEBSITE_NAME="resalasoft.com"
+WEBSITE_NAME="odoo22.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
