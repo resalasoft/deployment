@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo2"
+OE_USER="odoo3"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
@@ -39,7 +39,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf-${OE_USER}"
 # Set the website name
-WEBSITE_NAME="odoo2.resalasoft.com"
+WEBSITE_NAME="resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8073"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
@@ -56,7 +56,8 @@ sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
 sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
-
+echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
+sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 
 echo -e "\n============== Create ODOO system user ========================"
 #sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
@@ -128,7 +129,7 @@ echo -e "\n========== Create server config file ============="
 sudo touch /home/$OE_USER/${OE_CONFIG}.conf
 
 echo -e "\n============= Creating server config file ==========="
-sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "\n========= Generating random admin password ==========="
     OE_SUPERADMIN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
@@ -270,7 +271,7 @@ server {
  
 EOF
 
-  sudo mv ~/odoo /etc/nginx/sites-available/
+  sudo mv ~/$OE_USER /etc/nginx/sites-available/
   sudo ln -s /etc/nginx/sites-available/$OE_USER /etc/nginx/sites-enabled/$OE_USER
   sudo rm /etc/nginx/sites-enabled/default
   sudo rm /etc/nginx/sites-available/default
