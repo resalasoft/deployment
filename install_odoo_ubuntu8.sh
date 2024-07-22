@@ -20,7 +20,7 @@
 OE_USER="odoo"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
-OE_HOME_VENV="/home/$OE_USER/${OE_USER}-venv"
+OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
@@ -37,7 +37,7 @@ INSTALL_NGINX="True"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="True"
-OE_CONFIG="${OE_USER}-config"
+OE_CONFIG="conf-${OE_USER}"
 # Set the website name
 WEBSITE_NAME="example.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
@@ -203,7 +203,7 @@ echo -e "\n========== Create server config file ============="
 sudo touch /home/$OE_USER/${OE_CONFIG}.conf
 
 echo -e "\n============= Creating server config file ==========="
-sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "\n========= Generating random admin password ==========="
     OE_SUPERADMIN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
@@ -214,7 +214,7 @@ if [ $OE_VERSION > "11.0" ];then
 else
     sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 fi
-sudo su root -c "printf 'logfile = /home/$OE_USER/${OE_USER}.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /home/$OE_USER/log-${OE_USER}.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
@@ -235,8 +235,8 @@ if [ $IS_ENTERPRISE = "True" ]; then
   chown -R $OE_USER:$OE_USER ${OE_HOME}/
 fi
 
-sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
-sudo chmod 640 /etc/${OE_CONFIG}.conf
+sudo chown $OE_USER:$OE_USER /home/$OE_USER/${OE_CONFIG}.conf
+sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
 
 #--------------------------------------------------
 # Adding Odoo as a deamon (Systemd)
@@ -253,7 +253,7 @@ After=network.target
 Type=simple
 User=$OE_USER
 Group=$OE_USER
-ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/${OE_USER}.log
+ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log-${OE_USER}.log
 KillMode=mixed
 
 [Install]
@@ -399,7 +399,9 @@ echo "Port: $OE_PORT"
 echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
-echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
+echo "Config location: /home/$OE_USER/${OE_CONFIG}.conf"
+echo "Log location: /home/$OE_USER/log-${OE_USER}.log"
+echo "Addons folder: $OE_HOME/resala-addons". 
 echo "Password superadmin (database): $OE_SUPERADMIN"
 echo "Start Odoo service: sudo systemctl start $OE_USER"
 echo "Stop Odoo service: sudo systemctl stop $OE_USER"
