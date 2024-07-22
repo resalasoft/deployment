@@ -39,13 +39,13 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf-${OE_USER}"
 # Set the website name
-WEBSITE_NAME="example2.com"
+WEBSITE_NAME="odoo2.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8073"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
-ADMIN_EMAIL="odoo2@example.com"
+ADMIN_EMAIL="resalasoft@gmail.com"
 
 ###
 #----------------------------------------------------
@@ -200,12 +200,9 @@ sudo systemctl restart $OE_USER.service
 # Install Nginx if needed
 #--------------------------------------------------
 echo -e "\n======== Installing nginx ============="
-if [ $INSTALL_NGINX = "True" ]; then
-  echo -e "\n---- Installing and setting up Nginx ----"
-  sudo apt install -y nginx
-  sudo systemctl enable nginx
+
   
-cat <<EOF > /etc/nginx/sites-available/$OE_USER
+cat <<EOF > /etc/nginx/sites-available/$OE_USER-$OE_PORT
 
 # odoo server
  upstream $OE_USER {
@@ -335,4 +332,6 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open .bashrc and add line this at the end of file/n source /home/$OE_USER/venv-${OE_USER}/bin/activate\n then set password for user $OE_USER"
+echo " now open .bashrc and add  this line at the end of file "
+echo " source /home/$OE_USER/venv-${OE_USER}/bin/activate" 
+echo " set password for user $OE_USER"
