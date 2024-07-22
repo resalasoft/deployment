@@ -278,9 +278,7 @@ EOF
   sudo systemctl reload nginx
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
   echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/$OE_USER"
-else
-  echo "\n===== Nginx isn't installed due to choice of the user! ========"
-fi
+
 
 #--------------------------------------------------
 # Enable ssl with certbot
