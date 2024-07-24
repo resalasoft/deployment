@@ -364,6 +364,7 @@ fi
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
   sudo apt-get remove certbot
+  sudo apt install snapd
   sudo snap install core
   sudo snap refresh core
   sudo snap install --classic certbot
