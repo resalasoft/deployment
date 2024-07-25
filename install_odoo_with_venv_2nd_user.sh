@@ -129,13 +129,15 @@ echo -e "\n================== Install Wkhtmltopdf ==============================
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
+if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
-
+fi
 
 echo -e "\n============== Create ODOO system user ========================"
 #sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
