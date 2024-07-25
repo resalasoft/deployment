@@ -223,13 +223,14 @@ else
     sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 fi
 sudo su root -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-sudo su root -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-sudo su root -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 else
     sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+
 fi
 
 # echo -e "\n======== Adding Enterprise or custom modules ============="
