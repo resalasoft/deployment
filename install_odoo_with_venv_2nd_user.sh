@@ -420,4 +420,4 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv-${OE_USER}/bin/activate \\ then sudo passwd $OE_USER"
+echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
