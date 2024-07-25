@@ -155,9 +155,8 @@ echo -e "\n---- Setup python virtual environment ----"
 sudo pip3 install virtualenv
 cd $OE_HOME/
 virtualenv $OE_HOME_VENV
-su $OE_USER
 source "$OE_HOME_VENV/bin/activate"
-<<EOF
+
 echo -e "\n================== Install python packages/requirements ============================"
 sudo pip3 install --upgrade pip
 sudo pip3 install setuptools wheel
@@ -167,11 +166,15 @@ sudo pip3 install setuptools wheel
 #--------------------------------------------------
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
-sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.10/site-packages
 
 echo -e "\n========= Create custom module directory ============"
 sudo su $OE_USER -c "mkdir $OE_HOME/resala-addons"
 #sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+su $OE_USER
+<<EOF
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
+
 EOF
 
 echo -e "\n======= Setting permissions on home folder =========="
