@@ -159,7 +159,7 @@ cd $OE_HOME/
 virtualenv $OE_HOME_VENV
 source $OE_HOME_VENV/bin/activate
 echo -e "\n=========== after venv activate ================"
-echo "$USER"
+echo source $OE_HOME_VENV/bin/activate
 
 echo -e "\n================== Install python packages/requirements ============================"
 sudo pip3 install --upgrade pip
