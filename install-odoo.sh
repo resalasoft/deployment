@@ -130,15 +130,6 @@ sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontc
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs npm -y
-echo -e "\n=================== 2'nd npm ============================"
-
-sudo apt-get install -y npm
-
-sudo npm install -g --upgrade npm
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g less less-plugin-clean-css
-sudo npm install -g rtlcss node-gyp
 
 
 
