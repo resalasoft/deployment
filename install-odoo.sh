@@ -156,8 +156,7 @@ echo -e "\n=========== Create Log directory ================"
 sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 echo -e "\n=========== befor switch user ================"
 echo "$USER"
-
- sudo su - $OE_USER
+su  $OE_USER
  echo -e "\n=========== after switch user ================"
  echo "$USER"
 
