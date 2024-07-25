@@ -20,7 +20,7 @@
 OE_USER="odoo2"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
-OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
+OE_HOME_VENV="/home/$OE_USER/venv"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="False"
@@ -37,7 +37,7 @@ INSTALL_NGINX="True"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="True"
-OE_CONFIG="conf-${OE_USER}"
+OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="het2.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
@@ -220,7 +220,9 @@ if [ $OE_VERSION > "11.0" ];then
 else
     sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 fi
-sudo su root -c "printf 'logfile = /home/$OE_USER/log-${OE_USER}.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
@@ -259,8 +261,8 @@ After=network.target
 Type=simple
 User=$OE_USER
 Group=$OE_USER
-#ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log-${OE_USER}.log
-ExecStart=$OE_HOME_VENV/bin/python3 $OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log-${OE_USER}.log
+#ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
+ExecStart=$OE_HOME_VENV/bin/python3 $OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
 
 KillMode=mixed
 
@@ -408,7 +410,7 @@ echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Config location: /home/$OE_USER/${OE_CONFIG}.conf"
-echo "Log location: /home/$OE_USER/log-${OE_USER}.log"
+echo "Log location: /home/$OE_USER/log.log"
 echo "Addons folder: $OE_HOME/resala-addons". 
 echo "Password superadmin (database): $OE_SUPERADMIN"
 echo "Start Odoo service: sudo systemctl start $OE_USER"
@@ -418,4 +420,4 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv-${OE_USER}/bin/activate \\ then set password for user $OE_USER"
+echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv-${OE_USER}/bin/activate \\ then sudo passwd $OE_USER"
