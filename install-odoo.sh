@@ -204,7 +204,7 @@ deactivate
 echo -e "\n========= after deactivate ============"
 echo "$USER"
 
-exit
+#exit
 echo -e "\n========= after exit ============"
 echo "$USER"
 
