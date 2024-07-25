@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="odoo5"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
@@ -61,9 +61,9 @@ sudo systemctl restart sshd
 # Update Server
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
-sudo apt update 
-sudo apt upgrade -y
-sudo apt autoremove -y
+#sudo apt update 
+#sudo apt upgrade -y
+#sudo apt autoremove -y
 
 #--------------------------------------------------
 # Set up the timezones
