@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo2"
+OE_USER="odoo9"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
@@ -25,7 +25,7 @@ OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="False"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-OE_PORT="8080"
+OE_PORT="8099"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -41,7 +41,7 @@ OE_CONFIG="conf-${OE_USER}"
 # Set the website name
 WEBSITE_NAME="het2.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-LONGPOLLING_PORT="8074"
+LONGPOLLING_PORT="8079"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
@@ -166,7 +166,9 @@ sudo pip3 install setuptools wheel
 #--------------------------------------------------
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
-sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
+#sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.10/site-packages
+
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
