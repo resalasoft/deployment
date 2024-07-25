@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo5"
+OE_USER="odoo8"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
@@ -157,7 +157,7 @@ echo -e "\n---- Setup python virtual environment ----"
 sudo pip3 install virtualenv
 cd $OE_HOME/
 virtualenv $OE_HOME_VENV
-source "$OE_HOME_VENV/bin/activate"
+source $OE_HOME_VENV/bin/activate
 echo -e "\n=========== after venv activate ================"
 echo "$USER"
 
