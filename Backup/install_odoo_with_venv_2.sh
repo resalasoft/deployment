@@ -16,16 +16,16 @@
 # Execute the script to install Odoo:
 # ./install_odoo_ubuntu.sh
 ################################################################################
-
-OE_USER="odoo2"
+#<<EOF    EOF
+OE_USER="odoo"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
-OE_HOME_VENV="/home/$OE_USER/venv"
+OE_HOME_VENV="/home/$OE_USER/venv-${OE_USER}"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
-INSTALL_WKHTMLTOPDF="False"
+INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-OE_PORT="8080"
+OE_PORT="8069"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -37,11 +37,11 @@ INSTALL_NGINX="True"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="True"
-OE_CONFIG="conf"
+OE_CONFIG="conf-${OE_USER}"
 # Set the website name
-WEBSITE_NAME="het2.resalasoft.com"
+WEBSITE_NAME="het.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-LONGPOLLING_PORT="8074"
+LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
@@ -93,7 +93,7 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
 
-# sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+#  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
 #  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
 # For ARM Architecture 
@@ -129,15 +129,13 @@ echo -e "\n================== Install Wkhtmltopdf ==============================
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
-fi
+
 
 echo -e "\n============== Create ODOO system user ========================"
 #sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
@@ -168,9 +166,7 @@ sudo pip3 install setuptools wheel
 #--------------------------------------------------
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
-#sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
-sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.10/site-packages
-
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
@@ -222,15 +218,12 @@ if [ $OE_VERSION > "11.0" ];then
 else
     sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 fi
-sudo su root -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /home/$OE_USER/log-${OE_USER}.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 else
     sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo su root -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo su root -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-
 fi
 
 # echo -e "\n======== Adding Enterprise or custom modules ============="
@@ -264,9 +257,7 @@ After=network.target
 Type=simple
 User=$OE_USER
 Group=$OE_USER
-#ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
-ExecStart=$OE_HOME_VENV/bin/python3 $OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
-
+ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log-${OE_USER}.log
 KillMode=mixed
 
 [Install]
@@ -378,6 +369,7 @@ fi
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
   sudo apt-get remove certbot
+  sudo apt install snapd
   sudo snap install core
   sudo snap refresh core
   sudo snap install --classic certbot
@@ -413,7 +405,7 @@ echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Config location: /home/$OE_USER/${OE_CONFIG}.conf"
-echo "Log location: /home/$OE_USER/log.log"
+echo "Log location: /home/$OE_USER/log-${OE_USER}.log"
 echo "Addons folder: $OE_HOME/resala-addons". 
 echo "Password superadmin (database): $OE_SUPERADMIN"
 echo "Start Odoo service: sudo systemctl start $OE_USER"
@@ -423,4 +415,4 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
+echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv-${OE_USER}/bin/activate \\ then set password for user $OE_USER"
