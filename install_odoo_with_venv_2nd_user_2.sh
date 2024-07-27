@@ -39,7 +39,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="het2.resalasoft.com"
+WEBSITE_NAME="test22.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8074"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
