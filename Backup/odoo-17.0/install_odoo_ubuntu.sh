@@ -18,9 +18,8 @@
 ################################################################################
 
 OE_USER="odoo"
-OE_HOME="/home/$OE_USER"
-OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
-OE_HOME_VENV="/home/$OE_USER/venv"
+OE_HOME="/opt/$OE_USER"
+OE_HOME_EXT="/opt/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
@@ -37,15 +36,15 @@ INSTALL_NGINX="True"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="True"
-OE_CONFIG="conf"
+OE_CONFIG="${OE_USER}-server"
 # Set the website name
-WEBSITE_NAME="test21.resalasoft.com"
+WEBSITE_NAME="example.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
-ADMIN_EMAIL="resalasoft@gmail.com"
+ADMIN_EMAIL="odoo@example.com"
 
 ###
 #----------------------------------------------------
@@ -69,7 +68,7 @@ sudo apt autoremove -y
 # Set up the timezones
 #--------------------------------------------------
 # set the correct timezone on ubuntu
-timedatectl set-timezone Africa/Cairo
+timedatectl set-timezone Africa/Kigali
 timedatectl
 
 #--------------------------------------------------
@@ -81,42 +80,14 @@ sudo systemctl start postgresql && sudo systemctl enable postgresql
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 
-
-#--------------------------------------------------
-# Install Wkhtmltopdf if needed
-#--------------------------------------------------
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 17 ----"
-###  WKHTMLTOPDF download links
-## === Ubuntu Jammy x64 === (for other distributions please replace this link,
-## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
-## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
-
-# sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
-#  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
-
-# For ARM Architecture 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-  
-  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
-  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
-   else
-  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-  fi
-  
-
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install python3-pip
-sudo apt install python3-venv 
-sudo apt install -y git python3-dev libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev
+sudo apt install -y git python3 python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev  \
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libatlas-base-dev libblas-dev liblcms2-dev \
+zlib1g-dev libjpeg8-dev libxrender1
 
-sudo apt install -y npm
-apt --fix-broken install
 # install libssl
 sudo apt -y install libssl-dev
 
@@ -129,49 +100,54 @@ sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 echo -e "\n================== Install Wkhtmltopdf ============================================="
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
-echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+echo -e "\n================== Install python packages/requirements ============================"
+sudo pip3 install --upgrade pip
+sudo pip3 install setuptools wheel
 
+
+echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
-fi
 
+#--------------------------------------------------
+# Install Wkhtmltopdf if needed
+#--------------------------------------------------
+if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 16 ----"
+###  WKHTMLTOPDF download links
+## === Ubuntu Jammy x64 === (for other distributions please replace this link,
+## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
+## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
+## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
+
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+   else
+  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
+  fi
+  
 echo -e "\n============== Create ODOO system user ========================"
-#sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
-sudo adduser  $OE_USER --disabled-login --gecos 'ODOO' 
+sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
 
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
 echo -e "\n=========== Create Log directory ================"
-#sudo mkdir /var/log/$OE_USER
-sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
-
- #sudo - su  $OE_USER
-# VENV
-#-------------------------
-echo -e "\n---- Setup python virtual environment ----"
-sudo pip3 install virtualenv
-cd $OE_HOME/
-virtualenv $OE_HOME_VENV
-source "$OE_HOME_VENV/bin/activate"
-
-echo -e "\n================== Install python packages/requirements ============================"
-sudo pip3 install --upgrade pip
-sudo pip3 install setuptools wheel
+sudo mkdir /var/log/$OE_USER
+sudo chown -R $OE_USER:$OE_USER /var/log/$OE_USER
 
 #--------------------------------------------------
 # Install Odoo from source
 #--------------------------------------------------
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
-#sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
-sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.10/site-packages
-
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
@@ -198,40 +174,33 @@ if [ $IS_ENTERPRISE = "True" ]; then
 fi
 
 echo -e "\n========= Create custom module directory ============"
-sudo su $OE_USER -c "mkdir $OE_HOME/resala-addons"
-#sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
-
-#deactivate
-#exit
-#sudo su - root
+sudo su $OE_USER -c "mkdir $OE_HOME/custom"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 echo -e "\n======= Setting permissions on home folder =========="
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/
 
 echo -e "\n========== Create server config file ============="
-sudo touch /home/$OE_USER/${OE_CONFIG}.conf
+sudo touch /etc/${OE_CONFIG}.conf
 
 echo -e "\n============= Creating server config file ==========="
-sudo su root -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "\n========= Generating random admin password ==========="
     OE_SUPERADMIN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 fi
-sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
 if [ $OE_VERSION > "11.0" ];then
-    sudo su root -c "printf 'http_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'http_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
 else
-    sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
 fi
-sudo su root -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
-    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
 else
-    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo su root -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo su root -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-
+    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
 fi
 
 # echo -e "\n======== Adding Enterprise or custom modules ============="
@@ -247,8 +216,8 @@ if [ $IS_ENTERPRISE = "True" ]; then
   chown -R $OE_USER:$OE_USER ${OE_HOME}/
 fi
 
-sudo chown $OE_USER:$OE_USER /home/$OE_USER/${OE_CONFIG}.conf
-sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
+sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
+sudo chmod 640 /etc/${OE_CONFIG}.conf
 
 #--------------------------------------------------
 # Adding Odoo as a deamon (Systemd)
@@ -265,9 +234,7 @@ After=network.target
 Type=simple
 User=$OE_USER
 Group=$OE_USER
-#ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
-ExecStart=$OE_HOME_VENV/bin/python3 $OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
-
+ExecStart=$OE_HOME_EXT/odoo-bin --config /etc/${OE_CONFIG}.conf  --logfile /var/log/${OE_USER}/${OE_CONFIG}.log
 KillMode=mixed
 
 [Install]
@@ -413,9 +380,7 @@ echo "Port: $OE_PORT"
 echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
-echo "Config location: /home/$OE_USER/${OE_CONFIG}.conf"
-echo "Log location: /home/$OE_USER/log.log"
-echo "Addons folder: $OE_HOME/resala-addons". 
+echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
 echo "Password superadmin (database): $OE_SUPERADMIN"
 echo "Start Odoo service: sudo systemctl start $OE_USER"
 echo "Stop Odoo service: sudo systemctl stop $OE_USER"
@@ -424,4 +389,3 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open nano /home/$OE_USER/.bashrc and add line this at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
