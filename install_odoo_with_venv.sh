@@ -99,7 +99,7 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 # For ARM Architecture 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
   sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-  
+  sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
@@ -113,12 +113,9 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 echo -e "\n=================== Installing Python Dependencies ============================"
 sudo apt install python3-pip
 sudo apt install python3-venv 
-sudo apt install -y git python3-dev libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev
-
-sudo apt install -y npm
+sudo apt-get install -y python3-dev  libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev -y
 apt --fix-broken install
-# install libssl
-sudo apt -y install libssl-dev
+
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -133,11 +130,10 @@ echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support ========
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs npm -y
-sudo npm install -g --upgrade npm
+sudo apt-get install -y npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
-sudo npm install -g rtlcss node-gyp
+sudo apt-get install -y node-less
 fi
 
 echo -e "\n============== Create ODOO system user ========================"
