@@ -23,9 +23,9 @@ OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
-INSTALL_WKHTMLTOPDF="False"
+INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-OE_PORT="8080"
+OE_PORT="8073"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -39,13 +39,13 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="test22.resalasoft.com"
+WEBSITE_NAME="mg.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8074"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
-ADMIN_EMAIL="resalasofteg@gmail.com"
+ADMIN_EMAIL="resalasoft@gmail.com"
 
 ###
 #----------------------------------------------------
@@ -99,7 +99,7 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 # For ARM Architecture 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
   sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-  
+  sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
@@ -111,13 +111,11 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install -y git python3 python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev  \
-libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libatlas-base-dev libblas-dev liblcms2-dev \
-zlib1g-dev libjpeg8-dev libxrender1
-
+sudo apt install python3-pip
+sudo apt install python3-venv 
+sudo apt-get install -y python3-dev  libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev -y
 apt --fix-broken install
-# install libssl
-sudo apt -y install libssl-dev
+
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -132,11 +130,10 @@ echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support ========
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs npm -y
-sudo npm install -g --upgrade npm
+sudo apt-get install -y npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
-sudo npm install -g rtlcss node-gyp
+sudo apt-get install -y node-less
 fi
 
 echo -e "\n============== Create ODOO system user ========================"
@@ -378,6 +375,7 @@ fi
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
   sudo apt-get remove certbot
+  sudo apt install snapd
   sudo snap install core
   sudo snap refresh core
   sudo snap install --classic certbot
