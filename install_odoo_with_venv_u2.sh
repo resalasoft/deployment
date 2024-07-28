@@ -23,7 +23,7 @@ OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
-INSTALL_WKHTMLTOPDF="True"
+INSTALL_WKHTMLTOPDF="False"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8073"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
