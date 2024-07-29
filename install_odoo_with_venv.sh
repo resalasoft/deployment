@@ -16,7 +16,7 @@
 # Execute the script to install Odoo:
 # ./install_odoo_ubuntu.sh
 ################################################################################
-
+#sudo -i 
 OE_USER="odoo"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
