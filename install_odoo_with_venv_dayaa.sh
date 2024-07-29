@@ -261,8 +261,8 @@ After=network.target
 Type=simple
 User=$OE_USER
 Group=$OE_USER
-#ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
-ExecStart=$OE_HOME_VENV/bin/python3 $OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
+#ExecStart='$OE_HOME_EXT'/odoo-bin --config /home/'$OE_USER'/'${OE_CONFIG}'.conf  --logfile /home/'$OE_USER'/log.log
+ExecStart='$OE_HOME_VENV'/bin/python3 '$OE_HOME_EXT'/odoo-bin --config /home/'$OE_USER'/'${OE_CONFIG}'.conf  --logfile /home/'$OE_USER'/log.log
 
 KillMode=mixed
 
@@ -293,25 +293,25 @@ if [ $INSTALL_NGINX = "True" ]; then
 sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/'$OE_USER'
 
 # odoo server
- upstream $OE_USER {
- server 127.0.0.1:$OE_PORT;
+ upstream '$OE_USER' {
+ server 127.0.0.1:'$OE_PORT';
 }
 
- upstream ${OE_USER}chat {
- server 127.0.0.1:$LONGPOLLING_PORT;
+ upstream '${OE_USER}'chat {
+ server 127.0.0.1:'$LONGPOLLING_PORT';
 }
 
 server {
    listen 80;
-   server_name $WEBSITE_NAME;
+   server_name '$WEBSITE_NAME';
 
    # Specifies the maximum accepted body size of a client request,
    # as indicated by the request header Content-Length.
    client_max_body_size 500M;
 
    # log
-   access_log /var/log/nginx/$OE_USER-access.log;
-   error_log /var/log/nginx/$OE_USER-error.log;
+   access_log /var/log/nginx/'$OE_USER'-access.log;
+   error_log /var/log/nginx/'$OE_USER'-error.log;
 
    # add ssl specific settings
    keepalive_timeout 90;
@@ -325,21 +325,21 @@ server {
    proxy_send_timeout 720s;
   
    # Add Headers for odoo proxy mode
-   proxy_set_header Host \$host;
-   proxy_set_header X-Forwarded-Host \$host;
-   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-   proxy_set_header X-Forwarded-Proto \$scheme;
-   proxy_set_header X-Real-IP \$remote_addr;
+   proxy_set_header Host \'$host';
+   proxy_set_header X-Forwarded-Host \'$host';
+   proxy_set_header X-Forwarded-For \'$proxy_add_x_forwarded_for';
+   proxy_set_header X-Forwarded-Proto \'$scheme';
+   proxy_set_header X-Real-IP \'$remote_addr';
 
    # Redirect requests to odoo backend server
    location / {
      proxy_redirect off;
-     proxy_pass http://$OE_USER;
+     proxy_pass http://''$OE_USER;
    }
 
    # Redirect longpoll requests to odoo longpolling port
    location /longpolling {
-       proxy_pass http://${OE_USER}chat;
+       proxy_pass http://'${OE_USER}'chat;
    }
 
    # cache some static data in memory for 90mins
@@ -348,7 +348,7 @@ server {
        proxy_cache_valid 200 90m;
        proxy_buffering on;
        expires 864000;
-       proxy_pass http://$OE_USER;
+       proxy_pass http://'$OE_USER';
   }
 
   # common gzip
