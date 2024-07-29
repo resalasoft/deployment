@@ -211,7 +211,7 @@ echo -e "\n============= Creating server config file ==========="
 sudo su azure -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "\n========= Generating random admin password ==========="
-    OE_SUPERADMIN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
+    OE_SUPERADMIN=$(sudo cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 fi
 sudo su azure -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $OE_VERSION > "11.0" ];then
@@ -251,7 +251,7 @@ sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-sudo cat <<EOF > /lib/systemd/system/$OE_USER.service
+sudo bash -c 'cat <<EOF > /lib/systemd/system/$OE_USER.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
@@ -269,7 +269,7 @@ KillMode=mixed
 [Install]
 WantedBy=multi-user.target
 
-EOF
+EOF'
 
 sudo chmod 755 /lib/systemd/system/$OE_USER.service
 sudo chown azure: /lib/systemd/system/$OE_USER.service
@@ -290,7 +290,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo apt install -y nginx
   sudo systemctl enable nginx
   
-cat <<EOF > /etc/nginx/sites-available/$OE_USER
+sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
  upstream $OE_USER {
@@ -356,7 +356,7 @@ server {
   gzip on;
 }
  
-EOF
+EOF'
 
   sudo mv ~/odoo /etc/nginx/sites-available/
   sudo ln -s /etc/nginx/sites-available/$OE_USER /etc/nginx/sites-enabled/$OE_USER
