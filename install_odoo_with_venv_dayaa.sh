@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo2"
+OE_USER="odoo3"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
@@ -251,8 +251,8 @@ sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-sudo touch /lib/systemd/system/$OE_USER.service
-sudo bash -c 'cat <<EOF > /lib/systemd/system/$OE_USER.service
+#sudo touch /lib/systemd/system/$OE_USER.service
+sudo bash -c 'cat <<EOF > /lib/systemd/system/odoo23.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
