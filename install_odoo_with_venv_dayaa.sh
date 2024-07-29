@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="odoo2"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
@@ -25,7 +25,7 @@ OE_HOME_VENV="/home/$OE_USER/venv"
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-OE_PORT="8020"
+OE_PORT="8022"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -41,7 +41,7 @@ OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="dayaa.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-LONGPOLLING_PORT="8030"
+LONGPOLLING_PORT="8032"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
@@ -208,25 +208,25 @@ echo -e "\n========== Create server config file ============="
 sudo touch /home/$OE_USER/${OE_CONFIG}.conf
 
 echo -e "\n============= Creating server config file ==========="
-sudo su azure -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo sudo bash -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "\n========= Generating random admin password ==========="
     OE_SUPERADMIN=$(sudo cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 fi
-sudo su azure -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo sudo bash -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $OE_VERSION > "11.0" ];then
-    sudo su azure -c "printf 'http_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo sudo bash -c "printf 'http_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 else
-    sudo su azure -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo sudo bash -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 fi
-sudo su azure -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo sudo bash -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
-    sudo su azure -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo sudo bash -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 else
-    sudo su azure -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo su azure -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo su azure -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo sudo bash -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo sudo bash -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo sudo bash -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 fi
 
@@ -364,7 +364,7 @@ EOF'
   sudo rm /etc/nginx/sites-available/default
   
   sudo systemctl reload nginx
-  sudo su azure -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
+  sudo sudo bash -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
   echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/$OE_USER"
 else
   echo "\n===== Nginx isn't installed due to choice of the user! ========"
