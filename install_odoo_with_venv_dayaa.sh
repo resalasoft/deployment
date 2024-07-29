@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 
-OE_USER="odoo6"
+OE_USER="odoo7"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
@@ -25,7 +25,7 @@ OE_HOME_VENV="/home/$OE_USER/venv"
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-OE_PORT="8022"
+OE_PORT="8027"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -41,7 +41,7 @@ OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="dayaa.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-LONGPOLLING_PORT="8032"
+LONGPOLLING_PORT="8037"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
@@ -82,12 +82,49 @@ echo -e "\n=============== Creating the ODOO PostgreSQL User ===================
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 
 
+#--------------------------------------------------
+# Install Wkhtmltopdf if needed
+#--------------------------------------------------
+if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 17 ----"
+###  WKHTMLTOPDF download links
+## === Ubuntu Jammy x64 === (for other distributions please replace this link,
+## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
+## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
+## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
 
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+
+# For ARM Architecture 
+ # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+  #sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+  sudo apt install -f
+  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+   else
+  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
+  fi
   
 
+#--------------------------------------------------
+# Install Python Dependencies
+#--------------------------------------------------
+echo -e "\n=================== Installing Python Dependencies ============================"
+sudo apt install python3-pip
+sudo apt install python3-venv 
+sudo apt-get install -y python3-dev  libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev -y
+apt --fix-broken install
 
 
+#--------------------------------------------------
+# Install Python pip Dependencies
+#--------------------------------------------------
+echo -e "\n=================== Installing Python pip Dependencies ============================"
+sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 
+echo -e "\n================== Install Wkhtmltopdf ============================================="
+sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
@@ -119,7 +156,9 @@ cd $OE_HOME/
 virtualenv $OE_HOME_VENV
 source "$OE_HOME_VENV/bin/activate"
 
-
+echo -e "\n================== Install python packages/requirements ============================"
+sudo pip3 install --upgrade pip
+sudo pip3 install setuptools wheel
 
 #--------------------------------------------------
 # Install Odoo from source
@@ -212,7 +251,6 @@ sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-#sudo touch /lib/systemd/system/odoo4.service
 sudo bash -c 'cat <<EOF > /lib/systemd/system/'$OE_USER'.service
 
 [Unit]
@@ -234,7 +272,7 @@ WantedBy=multi-user.target
 EOF'
 
 sudo chmod 755 /lib/systemd/system/$OE_USER.service
-sudo chown azure: /lib/systemd/system/$OE_USER.service
+sudo chown root: /lib/systemd/system/$OE_USER.service
 
 echo -e "\n======== Odoo startup File ============="
 sudo systemctl daemon-reload
@@ -252,7 +290,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo apt install -y nginx
   sudo systemctl enable nginx
   
-sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/$OE_USER
+sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/'$OE_USER'
 
 # odoo server
  upstream $OE_USER {
