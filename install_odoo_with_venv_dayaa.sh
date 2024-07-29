@@ -251,6 +251,7 @@ sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
+sudo touch /lib/systemd/system/$OE_USER.service
 sudo bash -c 'cat <<EOF > /lib/systemd/system/$OE_USER.service
 
 [Unit]
