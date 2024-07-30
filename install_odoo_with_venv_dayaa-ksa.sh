@@ -16,8 +16,8 @@
 # Execute the script to install Odoo:
 # ./install_odoo_ubuntu.sh
 ################################################################################
-
-OE_USER="odoo7"
+#sudo -i 
+OE_USER="odoo"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
@@ -25,7 +25,7 @@ OE_HOME_VENV="/home/$OE_USER/venv"
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-OE_PORT="8027"
+OE_PORT="8020"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -41,7 +41,7 @@ OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="dayaa.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
-LONGPOLLING_PORT="8037"
+LONGPOLLING_PORT="8030"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
@@ -69,7 +69,7 @@ sudo apt autoremove -y
 # Set up the timezones
 #--------------------------------------------------
 # set the correct timezone on ubuntu
-timedatectl set-timezone Africa/Cairo
+timedatectl set-timezone Asia/Riyadh
 timedatectl
 
 #--------------------------------------------------
@@ -93,12 +93,13 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
-  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+ sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+ sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
 # For ARM Architecture 
  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  #sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+ # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+
   sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
@@ -199,7 +200,7 @@ sudo su $OE_USER -c "mkdir $OE_HOME/resala-addons"
 
 #deactivate
 #exit
-#sudo su - azure
+#sudo su - root
 
 echo -e "\n======= Setting permissions on home folder =========="
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/
@@ -208,25 +209,25 @@ echo -e "\n========== Create server config file ============="
 sudo touch /home/$OE_USER/${OE_CONFIG}.conf
 
 echo -e "\n============= Creating server config file ==========="
-sudo sudo bash -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf '[options] \n\n; This is the password that allows database operations:\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "\n========= Generating random admin password ==========="
-    OE_SUPERADMIN=$(sudo cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
+    OE_SUPERADMIN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
 fi
-sudo sudo bash -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 if [ $OE_VERSION > "11.0" ];then
-    sudo sudo bash -c "printf 'http_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'http_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 else
-    sudo sudo bash -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 fi
-sudo sudo bash -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /home/$OE_USER/log.log\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
-    sudo sudo bash -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 else
-    sudo sudo bash -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo sudo bash -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
-    sudo sudo bash -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'proxy_mode = True\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'workers = 3\n' >> /home/$OE_USER/${OE_CONFIG}.conf"
 
 fi
 
@@ -251,7 +252,7 @@ sudo chmod 640 /home/$OE_USER/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-sudo bash -c 'cat <<EOF > /lib/systemd/system/'$OE_USER'.service
+cat <<EOF > /lib/systemd/system/$OE_USER.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
@@ -261,15 +262,15 @@ After=network.target
 Type=simple
 User=$OE_USER
 Group=$OE_USER
-#ExecStart='$OE_HOME_EXT'/odoo-bin --config /home/'$OE_USER'/'${OE_CONFIG}'.conf  --logfile /home/'$OE_USER'/log.log
-ExecStart='$OE_HOME_VENV'/bin/python3 '$OE_HOME_EXT'/odoo-bin --config /home/'$OE_USER'/'${OE_CONFIG}'.conf  --logfile /home/'$OE_USER'/log.log
+#ExecStart=$OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
+ExecStart=$OE_HOME_VENV/bin/python3 $OE_HOME_EXT/odoo-bin --config /home/$OE_USER/${OE_CONFIG}.conf  --logfile /home/$OE_USER/log.log
 
 KillMode=mixed
 
 [Install]
 WantedBy=multi-user.target
 
-EOF'
+EOF
 
 sudo chmod 755 /lib/systemd/system/$OE_USER.service
 sudo chown root: /lib/systemd/system/$OE_USER.service
@@ -290,28 +291,28 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo apt install -y nginx
   sudo systemctl enable nginx
   
-sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/'$OE_USER'
+cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
- upstream '$OE_USER' {
- server 127.0.0.1:'$OE_PORT';
+ upstream $OE_USER {
+ server 127.0.0.1:$OE_PORT;
 }
 
- upstream '${OE_USER}'chat {
- server 127.0.0.1:'$LONGPOLLING_PORT';
+ upstream ${OE_USER}chat {
+ server 127.0.0.1:$LONGPOLLING_PORT;
 }
 
 server {
    listen 80;
-   server_name '$WEBSITE_NAME';
+   server_name $WEBSITE_NAME;
 
    # Specifies the maximum accepted body size of a client request,
    # as indicated by the request header Content-Length.
    client_max_body_size 500M;
 
    # log
-   access_log /var/log/nginx/'$OE_USER'-access.log;
-   error_log /var/log/nginx/'$OE_USER'-error.log;
+   access_log /var/log/nginx/$OE_USER-access.log;
+   error_log /var/log/nginx/$OE_USER-error.log;
 
    # add ssl specific settings
    keepalive_timeout 90;
@@ -325,21 +326,21 @@ server {
    proxy_send_timeout 720s;
   
    # Add Headers for odoo proxy mode
-   proxy_set_header Host \'$host';
-   proxy_set_header X-Forwarded-Host \'$host';
-   proxy_set_header X-Forwarded-For \'$proxy_add_x_forwarded_for';
-   proxy_set_header X-Forwarded-Proto \'$scheme';
-   proxy_set_header X-Real-IP \'$remote_addr';
+   proxy_set_header Host \$host;
+   proxy_set_header X-Forwarded-Host \$host;
+   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto \$scheme;
+   proxy_set_header X-Real-IP \$remote_addr;
 
    # Redirect requests to odoo backend server
    location / {
      proxy_redirect off;
-     proxy_pass http://''$OE_USER;
+     proxy_pass http://$OE_USER;
    }
 
    # Redirect longpoll requests to odoo longpolling port
    location /longpolling {
-       proxy_pass http://'${OE_USER}'chat;
+       proxy_pass http://${OE_USER}chat;
    }
 
    # cache some static data in memory for 90mins
@@ -348,7 +349,7 @@ server {
        proxy_cache_valid 200 90m;
        proxy_buffering on;
        expires 864000;
-       proxy_pass http://'$OE_USER';
+       proxy_pass http://$OE_USER;
   }
 
   # common gzip
@@ -356,7 +357,7 @@ server {
   gzip on;
 }
  
-EOF'
+EOF
 
   sudo mv ~/odoo /etc/nginx/sites-available/
   sudo ln -s /etc/nginx/sites-available/$OE_USER /etc/nginx/sites-enabled/$OE_USER
@@ -364,7 +365,7 @@ EOF'
   sudo rm /etc/nginx/sites-available/default
   
   sudo systemctl reload nginx
-  sudo sudo bash -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
+  sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
   echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/$OE_USER"
 else
   echo "\n===== Nginx isn't installed due to choice of the user! ========"
