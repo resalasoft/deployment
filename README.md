@@ -32,11 +32,11 @@ There are a few things you can configure, this is the most used list:<br/>
 
 #### 3. Make the script executable
 ```
-sudo chmod +x install_odoo_ubuntu_with_venv.sh
+sudo chmod +x install_odoo_with_venv.sh
 ```
 ##### 4. Execute the script:
 ```
-sudo ./install_odoo_ubuntu_with_venv.sh
+sudo ./install_odoo_with_venv.sh
 ```
 
 The installation should take about 10 minutes to complete and then you will be able to access it from
