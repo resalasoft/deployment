@@ -300,61 +300,141 @@ cat <<EOF > /etc/nginx/sites-available/$OE_USER
  upstream ${OE_USER}chat {
  server 127.0.0.1:$LONGPOLLING_PORT;
 }
-
+#NEW
 server {
-   listen 80;
-   server_name $WEBSITE_NAME;
+  listen 80;
 
-   # Specifies the maximum accepted body size of a client request,
-   # as indicated by the request header Content-Length.
-   client_max_body_size 500M;
+  # set proper server name after domain set
+  server_name $WEBSITE_NAME;
 
-   # log
-   access_log /var/log/nginx/$OE_USER-access.log;
-   error_log /var/log/nginx/$OE_USER-error.log;
+  # Add Headers for odoo proxy mode
+  proxy_set_header X-Forwarded-Host \$host;
+  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto \$scheme;
+  proxy_set_header X-Real-IP \$remote_addr;
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block";
+  proxy_set_header X-Client-IP \$remote_addr;
+  proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
 
-   # add ssl specific settings
-   keepalive_timeout 90;
+  #   odoo    log files
+  access_log  /var/log/nginx/$OE_USER-access.log;
+  error_log       /var/log/nginx/$OE_USER-error.log;
 
-   # increase proxy buffer to handle some Odoo web requests
-   proxy_buffers 16 64k;
-   proxy_buffer_size 128k;
+  #   increase    proxy   buffer  size
+  proxy_buffers   16  64k;
+  proxy_buffer_size   128k;
 
-   proxy_read_timeout 720s;
-   proxy_connect_timeout 720s;
-   proxy_send_timeout 720s;
-  
-   # Add Headers for odoo proxy mode
-   proxy_set_header Host \$host;
-   proxy_set_header X-Forwarded-Host \$host;
-   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-   proxy_set_header X-Forwarded-Proto \$scheme;
-   proxy_set_header X-Real-IP \$remote_addr;
+  proxy_read_timeout 900s;
+  proxy_connect_timeout 900s;
+  proxy_send_timeout 900s;
 
-   # Redirect requests to odoo backend server
-   location / {
-     proxy_redirect off;
-     proxy_pass http://$OE_USER;
-   }
+  #   force   timeouts    if  the backend dies
+  proxy_next_upstream error   timeout invalid_header  http_500    http_502
+  http_503;
 
-   # Redirect longpoll requests to odoo longpolling port
-   location /longpolling {
-       proxy_pass http://${OE_USER}chat;
-   }
-
-   # cache some static data in memory for 90mins
-   # under heavy load this should relieve stress on the Odoo web interface a bit.
-   location ~* /web/static/ {
-       proxy_cache_valid 200 90m;
-       proxy_buffering on;
-       expires 864000;
-       proxy_pass http://$OE_USER;
+  types {
+    text/less less;
+    text/scss scss;
   }
 
-  # common gzip
-  gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
-  gzip on;
+  #   enable  data    compression
+  gzip    on;
+  gzip_min_length 1100;
+  gzip_buffers    4   32k;
+  gzip_types  text/css text/less text/plain text/xml application/xml application/json application/javascript application/pdf image/jpeg image/png;
+  gzip_vary   on;
+  client_header_buffer_size 4k;
+  large_client_header_buffers 4 64k;
+  client_max_body_size 0;
+
+  location / {
+    proxy_pass    http://127.0.0.1:$OE_PORT;
+    # by default, do not forward anything
+    proxy_redirect off;
+  }
+
+  location /longpolling {
+    proxy_pass http://127.0.0.1:$LONGPOLLING_PORT;
+  }
+
+  location ~* .(js|css|png|jpg|jpeg|gif|ico)$ {
+    expires 2d;
+    proxy_pass http://127.0.0.1:$OE_PORT;
+    add_header Cache-Control "public, no-transform";
+  }
+
+  # cache some static data in memory for 60mins.
+  location ~ /[a-zA-Z0-9_-]*/static/ {
+    proxy_cache_valid 200 302 60m;
+    proxy_cache_valid 404      1m;
+    proxy_buffering    on;
+    expires 864000;
+    proxy_pass    http://127.0.0.1:$OE_PORT;
+  }
 }
+#NEW
+
+
+
+
+
+# KHA
+# server {
+#    listen 80;
+#    server_name $WEBSITE_NAME;
+
+#    # Specifies the maximum accepted body size of a client request,
+#    # as indicated by the request header Content-Length.
+#    client_max_body_size 500M;
+
+#    # log
+#    access_log /var/log/nginx/$OE_USER-access.log;
+#    error_log /var/log/nginx/$OE_USER-error.log;
+
+#    # add ssl specific settings
+#    keepalive_timeout 90;
+
+#    # increase proxy buffer to handle some Odoo web requests
+#    proxy_buffers 16 64k;
+#    proxy_buffer_size 128k;
+
+#    proxy_read_timeout 720s;
+#    proxy_connect_timeout 720s;
+#    proxy_send_timeout 720s;
+  
+#    # Add Headers for odoo proxy mode
+#    proxy_set_header Host \$host;
+#    proxy_set_header X-Forwarded-Host \$host;
+#    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+#    proxy_set_header X-Forwarded-Proto \$scheme;
+#    proxy_set_header X-Real-IP \$remote_addr;
+
+#    # Redirect requests to odoo backend server
+#    location / {
+#      proxy_redirect off;
+#      proxy_pass http://$OE_USER;
+#    }
+
+#    # Redirect longpoll requests to odoo longpolling port
+#    location /longpolling {
+#        proxy_pass http://${OE_USER}chat;
+#    }
+
+#    # cache some static data in memory for 90mins
+#    # under heavy load this should relieve stress on the Odoo web interface a bit.
+#    location ~* /web/static/ {
+#        proxy_cache_valid 200 90m;
+#        proxy_buffering on;
+#        expires 864000;
+#        proxy_pass http://$OE_USER;
+#   }
+
+#   # common gzip
+#   gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
+#   gzip on;
+# }
+# KHA
  
 EOF
 
@@ -380,7 +460,9 @@ if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME !
   sudo snap refresh core
   sudo snap install --classic certbot
   sudo ln -s /snap/bin/certbot /usr/bin/certbot
-  sudo certbot --nginx -d $WEBSITE_NAME 
+  #sudo certbot --nginx -d $WEBSITE_NAME 
+  sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
+
   sudo systemctl reload nginx  
   echo "\n============ SSL/HTTPS is enabled! ========================"
 else
