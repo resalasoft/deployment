@@ -340,7 +340,7 @@ server {
   gzip_vary   on;
   client_header_buffer_size 4k;
   large_client_header_buffers 4 64k;
-   client_max_body_size 500M;
+  client_max_body_size 500M;
   
    # Add Headers for odoo proxy mode
    proxy_set_header Host \$host;
@@ -403,18 +403,37 @@ fi
 #--------------------------------------------------
 # Enable ssl with certbot
 #--------------------------------------------------
-if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
-  sudo apt-get remove certbot
-  sudo apt install snapd
-  sudo snap install core
-  sudo snap refresh core
+# if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
+#   sudo apt-get remove certbot
+#   sudo apt install snapd
+#   sudo snap install core
+#   sudo snap refresh core
+#   sudo snap install --classic certbot
+#   sudo ln -s /snap/bin/certbot /usr/bin/certbot
+#   sudo certbot --nginx -d $WEBSITE_NAME 
+#   sudo systemctl reload nginx  
+#   echo "\n============ SSL/HTTPS is enabled! ========================"
+# else
+#   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
+# fi
+
+if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
+  sudo apt-get update -y
+  sudo apt install snapd -y
+  sudo snap install core; snap refresh core
   sudo snap install --classic certbot
-  sudo ln -s /snap/bin/certbot /usr/bin/certbot
-  sudo certbot --nginx -d $WEBSITE_NAME 
-  sudo systemctl reload nginx  
-  echo "\n============ SSL/HTTPS is enabled! ========================"
+  sudo apt-get install python3-certbot-nginx -y
+  sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
+  sudo service nginx reload
+  echo "SSL/HTTPS is enabled!"
 else
-  echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
+  echo "SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration!"
+  if $ADMIN_EMAIL = "odoo@example.com";then 
+    echo "Certbot does not support registering odoo@example.com. You should use real e-mail address."
+  fi
+  if $WEBSITE_NAME = "_";then
+    echo "Website name is set as _. Cannot obtain SSL Certificate for _. You should use real website address."
+  fi
 fi
 
 #--------------------------------------------------
