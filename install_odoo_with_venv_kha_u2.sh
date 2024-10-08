@@ -16,17 +16,17 @@
 # Execute the script to install Odoo:
 # ./install_odoo_ubuntu.sh
 ################################################################################
-#sudo -i 
-OE_USER="odoo"
+#sudo -i
+OE_USER="odoo2"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
-INSTALL_WKHTMLTOPDF="True"
+INSTALL_WKHTMLTOPDF="False"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 802+digit in last of OE_USER etc (odoo2 --> 8022  & odoo3 --> 8023 & odoo4 --> 8024)
-OE_PORT="8020"
+OE_PORT="8022"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="17.0"
@@ -40,10 +40,10 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="genz-s.com"
+WEBSITE_NAME="mg.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
-LONGPOLLING_PORT="8030"
+LONGPOLLING_PORT="8032"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
@@ -385,8 +385,6 @@ server {
   }
 
  
-}
- 
 EOF
 
   sudo mv ~/odoo /etc/nginx/sites-available/
@@ -417,26 +415,6 @@ if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME !
 else
   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
 fi
-###
-
-# if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
-#   sudo apt-get update -y
-#   sudo apt install snapd -y
-#   sudo snap install core; snap refresh core
-#   sudo snap install --classic certbot
-#   sudo apt-get install python3-certbot-nginx -y
-#   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
-#   sudo service nginx reload
-#   echo "SSL/HTTPS is enabled!"
-# else
-#   echo "SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration!"
-#   if $ADMIN_EMAIL = "odoo@example.com";then 
-#     echo "Certbot does not support registering odoo@example.com. You should use real e-mail address."
-#   fi
-#   if $WEBSITE_NAME = "_";then
-#     echo "Website name is set as _. Cannot obtain SSL Certificate for _. You should use real website address."
-#   fi
-# fi
 
 #--------------------------------------------------
 # UFW Firewall
@@ -472,4 +450,4 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open nano /home/$OE_USER/.bashrc and add this line  at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
+echo " now open nano /home/$OE_USER/.bashrc and add this line at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"

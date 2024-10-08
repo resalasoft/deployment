@@ -25,6 +25,7 @@ OE_HOME_VENV="/home/$OE_USER/venv"
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
+# Pattern 802+digit in last of OE_USER etc (odoo2 --> 8022  & odoo3 --> 8023 & odoo4 --> 8024)
 OE_PORT="8020"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
@@ -39,8 +40,9 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="jenzs.resalasoft.com"
+WEBSITE_NAME="genz-s.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
+# Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
 LONGPOLLING_PORT="8030"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
@@ -93,12 +95,12 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
 
-sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
- sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+# sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+#  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
 # For ARM Architecture 
-  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
   sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
@@ -300,28 +302,22 @@ cat <<EOF > /etc/nginx/sites-available/$OE_USER
  upstream ${OE_USER}chat {
  server 127.0.0.1:$LONGPOLLING_PORT;
 }
-#NEW
+
 server {
-  listen 80;
+   listen 80;
+   server_name $WEBSITE_NAME;
 
-  # set proper server name after domain set
-  server_name $WEBSITE_NAME;
+   # Specifies the maximum accepted body size of a client request,
+   # as indicated by the request header Content-Length.
 
-  # Add Headers for odoo proxy mode
-  proxy_set_header X-Forwarded-Host \$host;
-  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-  proxy_set_header X-Forwarded-Proto \$scheme;
-  proxy_set_header X-Real-IP \$remote_addr;
-  add_header X-Frame-Options "SAMEORIGIN";
-  add_header X-XSS-Protection "1; mode=block";
-  proxy_set_header X-Client-IP \$remote_addr;
-  proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
+   # log
+   access_log /var/log/nginx/$OE_USER-access.log;
+   error_log /var/log/nginx/$OE_USER-error.log;
 
-  #   odoo    log files
-  access_log  /var/log/nginx/$OE_USER-access.log;
-  error_log       /var/log/nginx/$OE_USER-error.log;
+   # add ssl specific settings
+   keepalive_timeout 90;
 
-  #   increase    proxy   buffer  size
+   #   increase    proxy   buffer  size
   proxy_buffers   16  64k;
   proxy_buffer_size   128k;
 
@@ -346,95 +342,48 @@ server {
   gzip_vary   on;
   client_header_buffer_size 4k;
   large_client_header_buffers 4 64k;
-  client_max_body_size 0;
+  client_max_body_size 500M;
+  
+   # Add Headers for odoo proxy mode
+   proxy_set_header Host \$host;
+   proxy_set_header X-Forwarded-Host \$host;
+   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto \$scheme;
+   proxy_set_header X-Real-IP \$remote_addr;
 
-  location / {
-    proxy_pass    http://127.0.0.1:$OE_PORT;
-    # by default, do not forward anything
-    proxy_redirect off;
-  }
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block";
+  proxy_set_header X-Client-IP \$remote_addr;
+  proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
 
-  location /longpolling {
-    proxy_pass http://127.0.0.1:$LONGPOLLING_PORT;
+
+   # Redirect requests to odoo backend server
+   location / {
+     proxy_redirect off;
+     proxy_pass http://$OE_USER;
+   }
+
+   # Redirect longpoll requests to odoo longpolling port
+   location /longpolling {
+       proxy_pass http://${OE_USER}chat;
+   }
+
+   # cache some static data in memory for 90mins
+   # under heavy load this should relieve stress on the Odoo web interface a bit.
+  location ~ /[a-zA-Z0-9_-]*/static/ {
+    proxy_cache_valid 200 302 90m;
+    proxy_cache_valid 404      1m;
+    proxy_buffering    on;
+    expires 864000;
+    proxy_pass http://$OE_USER;
   }
 
   location ~* .(js|css|png|jpg|jpeg|gif|ico)$ {
     expires 2d;
-    proxy_pass http://127.0.0.1:$OE_PORT;
+    proxy_pass http://$OE_USER;
     add_header Cache-Control "public, no-transform";
   }
 
-  # cache some static data in memory for 60mins.
-  location ~ /[a-zA-Z0-9_-]*/static/ {
-    proxy_cache_valid 200 302 60m;
-    proxy_cache_valid 404      1m;
-    proxy_buffering    on;
-    expires 864000;
-    proxy_pass    http://127.0.0.1:$OE_PORT;
-  }
-}
-#NEW
-
-
-
-
-
-# KHA
-# server {
-#    listen 80;
-#    server_name $WEBSITE_NAME;
-
-#    # Specifies the maximum accepted body size of a client request,
-#    # as indicated by the request header Content-Length.
-#    client_max_body_size 500M;
-
-#    # log
-#    access_log /var/log/nginx/$OE_USER-access.log;
-#    error_log /var/log/nginx/$OE_USER-error.log;
-
-#    # add ssl specific settings
-#    keepalive_timeout 90;
-
-#    # increase proxy buffer to handle some Odoo web requests
-#    proxy_buffers 16 64k;
-#    proxy_buffer_size 128k;
-
-#    proxy_read_timeout 720s;
-#    proxy_connect_timeout 720s;
-#    proxy_send_timeout 720s;
-  
-#    # Add Headers for odoo proxy mode
-#    proxy_set_header Host \$host;
-#    proxy_set_header X-Forwarded-Host \$host;
-#    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-#    proxy_set_header X-Forwarded-Proto \$scheme;
-#    proxy_set_header X-Real-IP \$remote_addr;
-
-#    # Redirect requests to odoo backend server
-#    location / {
-#      proxy_redirect off;
-#      proxy_pass http://$OE_USER;
-#    }
-
-#    # Redirect longpoll requests to odoo longpolling port
-#    location /longpolling {
-#        proxy_pass http://${OE_USER}chat;
-#    }
-
-#    # cache some static data in memory for 90mins
-#    # under heavy load this should relieve stress on the Odoo web interface a bit.
-#    location ~* /web/static/ {
-#        proxy_cache_valid 200 90m;
-#        proxy_buffering on;
-#        expires 864000;
-#        proxy_pass http://$OE_USER;
-#   }
-
-#   # common gzip
-#   gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
-#   gzip on;
-# }
-# KHA
  
 EOF
 
@@ -453,42 +402,20 @@ fi
 #--------------------------------------------------
 # Enable ssl with certbot
 #--------------------------------------------------
-# if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
-#   sudo apt-get remove certbot
-#   sudo apt install snapd
-#   sudo snap install core
-#   sudo snap refresh core
-#   sudo snap install --classic certbot
-#   sudo ln -s /snap/bin/certbot /usr/bin/certbot
-#   #sudo certbot --nginx -d $WEBSITE_NAME 
-#   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
-
-#   sudo systemctl reload nginx  
-#   echo "\n============ SSL/HTTPS is enabled! ========================"
-# else
-#   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
-# fi
-
-#NEW
-if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
-  sudo apt-get update -y
-  sudo apt install snapd -y
-  sudo snap install core; snap refresh core
+if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
+  sudo apt-get remove certbot
+  sudo apt install snapd
+  sudo snap install core
+  sudo snap refresh core
   sudo snap install --classic certbot
-  sudo apt-get install python3-certbot-nginx -y
-  sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
-  sudo service nginx reload
-  echo "SSL/HTTPS is enabled!"
+  sudo ln -s /snap/bin/certbot /usr/bin/certbot
+  sudo certbot --nginx -d $WEBSITE_NAME 
+  sudo systemctl reload nginx  
+  echo "\n============ SSL/HTTPS is enabled! ========================"
 else
-  echo "SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration!"
-  if $ADMIN_EMAIL = "odoo@example.com";then 
-    echo "Certbot does not support registering odoo@example.com. You should use real e-mail address."
-  fi
-  if $WEBSITE_NAME = "_";then
-    echo "Website name is set as _. Cannot obtain SSL Certificate for _. You should use real website address."
-  fi
+  echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
 fi
-#New
+
 #--------------------------------------------------
 # UFW Firewall
 #--------------------------------------------------
@@ -523,4 +450,4 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-echo " now open nano /home/$OE_USER/.bashrc and add this line  at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
+echo " now open nano /home/$OE_USER/.bashrc and add this line at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
