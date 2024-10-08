@@ -25,6 +25,7 @@ OE_HOME_VENV="/home/$OE_USER/venv"
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
+# Pattern 802+digit in last of OE_USER etc (odoo2 --> 8022  & odoo3 --> 8023 & odoo4 --> 8024)
 OE_PORT="8020"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
@@ -41,6 +42,7 @@ OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="genz-s.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
+# Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
 LONGPOLLING_PORT="8030"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
@@ -368,7 +370,6 @@ server {
 
    # cache some static data in memory for 90mins
    # under heavy load this should relieve stress on the Odoo web interface a bit.
-    # cache some static data in memory for 60mins.
   location ~ /[a-zA-Z0-9_-]*/static/ {
     proxy_cache_valid 200 302 90m;
     proxy_cache_valid 404      1m;
