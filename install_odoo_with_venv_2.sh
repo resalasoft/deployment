@@ -419,6 +419,7 @@ fi
 # fi
 
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
+  sudo apt-get remove certbot
   sudo apt-get update -y
   sudo apt install snapd -y
   sudo snap install core; snap refresh core
