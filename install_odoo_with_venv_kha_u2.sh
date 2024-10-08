@@ -383,7 +383,7 @@ server {
     proxy_pass http://$OE_USER;
     add_header Cache-Control "public, no-transform";
   }
-
+}
  
 EOF
 
