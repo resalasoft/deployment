@@ -121,38 +121,38 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
-echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
-libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind python3-testresources
-apt --fix-broken install
+# echo -e "\n=================== Installing Python Dependencies ============================"
+# sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
+# libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind python3-testresources
+# apt --fix-broken install
 
 #--------------------------------------------------
 # Install Python pip Dependencies
 #--------------------------------------------------
-echo -e "\n=================== Installing Python pip Dependencies ============================"
-sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
+# echo -e "\n=================== Installing Python pip Dependencies ============================"
+# sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 
-echo -e "\n================== Install Wkhtmltopdf ============================================="
-sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
+# echo -e "\n================== Install Wkhtmltopdf ============================================="
+# sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
-sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
+# sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
+# libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
 
  
 
 
-sudo add-apt-repository ppa:linuxuprising/libpng12
-sudo apt update
-sudo apt install -y libpng12-0
+# sudo add-apt-repository ppa:linuxuprising/libpng12
+# sudo apt update
+# sudo apt install -y libpng12-0
 
 
-echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
-sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs -y
-sudo npm install -g --upgrade npm
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g less-plugin-clean-css
-sudo npm install -g rtlcss node-gyp
+# echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
+# sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# sudo apt install -y nodejs -y
+# sudo npm install -g --upgrade npm
+# sudo ln -s /usr/bin/nodejs /usr/bin/node
+# sudo npm install -g less-plugin-clean-css
+# sudo npm install -g rtlcss node-gyp
 apt --fix-broken install
 
 
