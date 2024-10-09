@@ -13,7 +13,7 @@ If you set the parameter ```INSTALL_NGINX``` to ```True``` you should also confi
 
 ##### 1. Download the script:
 ```
-wget https://raw.githubusercontent.com/resalasoft/deployment/17.0/install_odoo_with_venv.sh
+wget https://raw.githubusercontent.com/resalasoft/deployment/14.0/install_odoo_with_venv_kha.sh
 ```
 ##### 2. Modify the parameters as you wish.
 There are a few things you can configure, this is the most used list:<br/>
@@ -32,11 +32,11 @@ There are a few things you can configure, this is the most used list:<br/>
 
 #### 3. Make the script executable
 ```
-sudo chmod +x install_odoo_with_venv.sh
+sudo chmod +x install_odoo_with_venv_kha.sh
 ```
 ##### 4. Execute the script:
 ```
-sudo ./install_odoo_with_venv.sh
+sudo ./install_odoo_with_venv_kha.sh
 ```
 
 The installation should take about 10 minutes to complete and then you will be able to access it from
