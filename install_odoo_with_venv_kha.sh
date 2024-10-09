@@ -136,7 +136,7 @@ echo -e "\n================== Install Wkhtmltopdf ==============================
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind python3-testresources
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update

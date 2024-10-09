@@ -123,7 +123,7 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
 sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
-libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind python3-testresources
 apt --fix-broken install
 
 #--------------------------------------------------
