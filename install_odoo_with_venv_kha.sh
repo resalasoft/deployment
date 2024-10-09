@@ -141,11 +141,6 @@ sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
 sudo apt install -y libpng12-0
 
-echo -e "\n================== Install python packages/requirements ============================"
-wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo pip3 install --upgrade pip
-sudo pip3 install setuptools wheel
-sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
