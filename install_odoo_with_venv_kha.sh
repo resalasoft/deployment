@@ -171,9 +171,10 @@ echo -e "\n---- Setup python virtual environment ----"
 # sudo apt install python3-pip
 # apt --fix-broken install
 # sudo apt install python3-pip
-sudo pip3 install virtualenv
+sudo pip3 install virtualenv --upgrade
 cd $OE_HOME/
-virtualenv $OE_HOME_VENV
+# virtualenv $OE_HOME_VENV venv
+python3 -m venv
 source "$OE_HOME_VENV/bin/activate"
 
 echo -e "\n================== Install python packages/requirements ============================"
