@@ -171,7 +171,7 @@ sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 # VENV
 #-------------------------
 echo -e "\n---- Setup python virtual environment ----"
-sudo pip3 install virtualenv
+sudo pip3 install virtualenv --upgrade
 cd $OE_HOME/
 virtualenv $OE_HOME_VENV
 source "$OE_HOME_VENV/bin/activate"
