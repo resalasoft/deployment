@@ -63,10 +63,16 @@ sudo systemctl restart sshd
 # Update Server
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
+# universe package is for Ubuntu 20.x
+sudo apt install -y software-properties-common
+sudo add-apt-repository universe
+
+# libpng12-0 dependency for wkhtmltopdf
+sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ focal main"
+
 sudo apt update 
 sudo apt upgrade -y
 sudo apt autoremove -y
-
 #--------------------------------------------------
 # Set up the timezones
 #--------------------------------------------------
@@ -74,9 +80,14 @@ sudo apt autoremove -y
 timedatectl set-timezone Africa/Cairo
 timedatectl
 
+
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
+echo -e "\n================ Install PostgreSQL Server =========================="
+echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt update
 sudo apt install -y postgresql
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
@@ -88,36 +99,31 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 17 ----"
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
 ###  WKHTMLTOPDF download links
-## === Ubuntu Jammy x64 === (for other distributions please replace this link,
+## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
+## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-# sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
-#  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
 
-# For ARM Architecture 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-  sudo apt install -f
+  # For ARM Architecture 
+  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+  # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
   fi
-  
-
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install python3-pip
-sudo apt install python3-venv 
-sudo apt-get install -y python3-dev  libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev -y
-apt --fix-broken install
-
+sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -128,15 +134,27 @@ sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 echo -e "\n================== Install Wkhtmltopdf ============================================="
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
-echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
+libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
 
-sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y npm
+sudo add-apt-repository ppa:linuxuprising/libpng12
+sudo apt update
+sudo apt install -y libpng12-0
+
+echo -e "\n================== Install python packages/requirements ============================"
+wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
+sudo pip3 install --upgrade pip
+sudo pip3 install setuptools wheel
+sudo pip3 install -r requirements.txt
+
+echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
+sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt install -y nodejs -y
+sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g less less-plugin-clean-css
-sudo apt-get install -y node-less
-fi
+sudo npm install -g less-plugin-clean-css
+sudo npm install -g rtlcss node-gyp
+
 
 echo -e "\n============== Create ODOO system user ========================"
 #sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
@@ -161,6 +179,7 @@ source "$OE_HOME_VENV/bin/activate"
 echo -e "\n================== Install python packages/requirements ============================"
 sudo pip3 install --upgrade pip
 sudo pip3 install setuptools wheel
+
 
 #--------------------------------------------------
 # Install Odoo from source
@@ -194,6 +213,7 @@ if [ $IS_ENTERPRISE = "True" ]; then
     sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
     sudo npm install -g less-plugin-clean-css
 fi
+
 
 echo -e "\n========= Create custom module directory ============"
 sudo su $OE_USER -c "mkdir $OE_HOME/resala-addons"
@@ -399,18 +419,34 @@ EOF
 else
   echo "\n===== Nginx isn't installed due to choice of the user! ========"
 fi
-
+#17
+# #--------------------------------------------------
+# # Enable ssl with certbot
+# #--------------------------------------------------
+# if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
+#   sudo apt-get remove certbot
+#   sudo apt install snapd
+#   sudo snap install core
+#   sudo snap refresh core
+#   sudo snap install --classic certbot
+#   sudo ln -s /snap/bin/certbot /usr/bin/certbot
+#   sudo certbot --nginx -d $WEBSITE_NAME 
+#   sudo systemctl reload nginx  
+#   echo "\n============ SSL/HTTPS is enabled! ========================"
+# else
+#   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
+# fi
+#17
 #--------------------------------------------------
 # Enable ssl with certbot
 #--------------------------------------------------
-if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ]  && [ $WEBSITE_NAME != "example.com" ];then
+if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "example.com" ];then
   sudo apt-get remove certbot
-  sudo apt install snapd
   sudo snap install core
   sudo snap refresh core
   sudo snap install --classic certbot
   sudo ln -s /snap/bin/certbot /usr/bin/certbot
-  sudo certbot --nginx -d $WEBSITE_NAME 
+  sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
   sudo systemctl reload nginx  
   echo "\n============ SSL/HTTPS is enabled! ========================"
 else
