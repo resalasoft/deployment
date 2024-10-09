@@ -186,7 +186,7 @@ sudo pip3 install setuptools wheel
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 #sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
-sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.10/site-packages
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.8/site-packages
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
