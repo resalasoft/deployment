@@ -112,21 +112,21 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
-echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install python3-pip
-sudo apt install python3-venv 
-sudo apt-get install -y python3-dev  libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev -y
-apt --fix-broken install
+# echo -e "\n=================== Installing Python Dependencies ============================"
+# sudo apt install python3-pip
+# sudo apt install python3-venv 
+# sudo apt-get install -y python3-dev  libxml2-dev libxslt1-dev zlib1g-dev libsasl2-dev libldap2-dev build-essential libssl-dev libffi-dev libmysqlclient-dev libjpeg-dev libpq-dev libjpeg8-dev liblcms2-dev libblas-dev libatlas-base-dev -y
+# apt --fix-broken install
 
 
 #--------------------------------------------------
 # Install Python pip Dependencies
 #--------------------------------------------------
-echo -e "\n=================== Installing Python pip Dependencies ============================"
-sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
+# echo -e "\n=================== Installing Python pip Dependencies ============================"
+# sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 
-echo -e "\n================== Install Wkhtmltopdf ============================================="
-sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
+# echo -e "\n================== Install Wkhtmltopdf ============================================="
+# sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
@@ -153,9 +153,10 @@ sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 # VENV
 #-------------------------
 echo -e "\n---- Setup python virtual environment ----"
-sudo pip3 install virtualenv
+sudo pip3 install virtualenv --upgrade
 cd $OE_HOME/
-virtualenv $OE_HOME_VENV
+# virtualenv $OE_HOME_VENV venv
+python3 -m venv venv
 source "$OE_HOME_VENV/bin/activate"
 
 echo -e "\n================== Install python packages/requirements ============================"
