@@ -172,7 +172,7 @@ sudo chown -R $OE_USER:$OE_USER /home/$OE_USER
 #-------------------------
 echo -e "\n---- Setup python virtual environment ----"
 sudo apt install python3-pip
-apt --fix-broken install
+# apt --fix-broken install
 sudo apt install python3-pip
 sudo pip3 install virtualenv
 cd $OE_HOME/
