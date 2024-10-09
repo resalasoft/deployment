@@ -150,6 +150,7 @@ sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
+apt --fix-broken install
 
 
 echo -e "\n============== Create ODOO system user ========================"
