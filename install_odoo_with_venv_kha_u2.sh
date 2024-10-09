@@ -123,7 +123,7 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
 sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
-libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind
 apt --fix-broken install
 
 #--------------------------------------------------
@@ -137,6 +137,9 @@ sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontc
 
 sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
 libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
+
+ 
+
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
