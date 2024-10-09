@@ -490,3 +490,4 @@ if [ $INSTALL_NGINX = "True" ]; then
 fi
 echo -e "\n========================================================================="
 echo " now open nano /home/$OE_USER/.bashrc and add this line at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
+echo " now open nano /etc/postgresql/17/main/postgresql.conf and uncomment 2 parameters log_rotation_age = 1d & log_truncate_on_rotation = on"
