@@ -40,7 +40,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="jx14.resalasoft.com"
+WEBSITE_NAME="je-x.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
 LONGPOLLING_PORT="8030"
@@ -181,7 +181,8 @@ echo -e "\n---- Setup python virtual environment ----"
 
 sudo apt install virtualenv --upgrade
 cd $OE_HOME/
-virtualenv -p python3 $OE_HOME_VENV venv
+virtualenv $OE_HOME_VENV
+# virtualenv -p python3 $OE_HOME_VENV 
 # python3 -m venv venv
 source "$OE_HOME_VENV/bin/activate"
 
