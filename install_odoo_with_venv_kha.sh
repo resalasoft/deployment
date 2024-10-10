@@ -40,7 +40,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="fly14.resalasoft.com"
+WEBSITE_NAME="jx14.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
 LONGPOLLING_PORT="8030"
