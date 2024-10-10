@@ -178,7 +178,7 @@ echo -e "\n---- Setup python virtual environment ----"
 
 sudo apt install virtualenv --upgrade
 cd $OE_HOME/
-virtualenv -p python3 $OE_HOME_VENV venv
+virtualenv -p python3 $OE_HOME_VENV 
 # python3 -m venv venv
 source "$OE_HOME_VENV/bin/activate"
 
