@@ -77,8 +77,8 @@ timedatectl
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-sudo apt install -y postgresql
-sudo systemctl start postgresql && sudo systemctl enable postgresql
+# sudo apt install -y postgresql
+# sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
