@@ -182,9 +182,9 @@ cd $OE_HOME/
 python3 -m venv venv
 source "$OE_HOME_VENV/bin/activate"
 
-echo -e "\n================== Install python packages/requirements ============================"
-sudo pip3 install --upgrade pip
-sudo pip3 install setuptools wheel
+# echo -e "\n================== Install python packages/requirements ============================"
+# sudo pip3 install --upgrade pip
+# sudo pip3 install setuptools wheel
 
 
 #--------------------------------------------------
