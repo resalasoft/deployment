@@ -17,7 +17,7 @@
 # ./install_odoo_ubuntu.sh
 ################################################################################
 #sudo -i 
-OE_USER="odoo2"
+OE_USER="odoo5"
 OE_HOME="/home/$OE_USER"
 OE_HOME_EXT="/home/$OE_USER/${OE_USER}-server"
 OE_HOME_VENV="/home/$OE_USER/venv"
@@ -26,10 +26,10 @@ OE_HOME_VENV="/home/$OE_USER/venv"
 INSTALL_WKHTMLTOPDF="False"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 802+digit in last of OE_USER etc (odoo2 --> 8022  & odoo3 --> 8023 & odoo4 --> 8024)
-OE_PORT="8022"
+OE_PORT="8025"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
-OE_VERSION="14.0"
+OE_VERSION="12.0"
 # Set this to True if you want to install the Odoo enterprise version!
 IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
@@ -40,10 +40,10 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="caia14.resalasoft.com"
+WEBSITE_NAME="jx12.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
-LONGPOLLING_PORT="8032"
+LONGPOLLING_PORT="8035"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
