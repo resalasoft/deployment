@@ -85,8 +85,9 @@ timedatectl
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
-#echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
+echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+#curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
 sudo apt update
 sudo apt install -y postgresql-12
 sudo systemctl start postgresql && sudo systemctl enable postgresql
@@ -110,20 +111,19 @@ sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfon
 sudo apt-get install fontconfig
 sudo apt-get install -f
 
-  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  # sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
-  # sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+#  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
-  # For ARM Architecture 
+# For ARM Architecture 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  sudo apt install ./wkhtmltox_0.12.6-1.jammy_arm64.deb
   sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-
+  sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
   fi
+  
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
@@ -179,12 +179,19 @@ echo -e "\n---- Setup python virtual environment ----"
 # sudo apt install python3-pip
 # sudo apt install python3.8-venv --upgrade
 
-sudo apt install virtualenv --upgrade
+# sudo apt install virtualenv --upgrade
+# cd $OE_HOME/
+# virtualenv $OE_HOME_VENV
+# # virtualenv -p python3 $OE_HOME_VENV 
+# # python3 -m venv venv
+# source "$OE_HOME_VENV/bin/activate"
+
+sudo pip3 install virtualenv --upgrade
 cd $OE_HOME/
-virtualenv $OE_HOME_VENV
-# virtualenv -p python3 $OE_HOME_VENV 
-# python3 -m venv venv
+# virtualenv $OE_HOME_VENV venv
+python3 -m venv venv
 source "$OE_HOME_VENV/bin/activate"
+
 
 echo -e "\n================== Install python packages/requirements ============================"
 # sudo pip3 install --upgrade pip
