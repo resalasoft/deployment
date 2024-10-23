@@ -107,12 +107,10 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  # sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
   # sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
 
   # For ARM Architecture 
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  # sudo apt install ./wkhtmltox_0.12.6-1.jammy_arm64.deb
   # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
 
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
@@ -178,11 +176,17 @@ echo -e "\n---- Setup python virtual environment ----"
 # sudo apt install python3-pip
 # sudo apt install python3.8-venv --upgrade
 
-sudo apt install virtualenv --upgrade
+# sudo apt install virtualenv --upgrade
+# cd $OE_HOME/
+# virtualenv $OE_HOME_VENV
+# # virtualenv -p python3 $OE_HOME_VENV 
+# # python3 -m venv venv
+# source "$OE_HOME_VENV/bin/activate"
+
+sudo pip3 install virtualenv --upgrade
 cd $OE_HOME/
-# virtualenv -p python3 $OE_HOME_VENV 
-virtualenv $OE_HOME_VENV
-# python3 -m venv venv
+# virtualenv $OE_HOME_VENV venv
+python3 -m venv venv
 source "$OE_HOME_VENV/bin/activate"
 
 # echo -e "\n================== Install python packages/requirements ============================"
