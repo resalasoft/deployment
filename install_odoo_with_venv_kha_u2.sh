@@ -113,11 +113,11 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
   # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
 
-  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
-  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
-   else
-  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-  fi
+  # sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+  # sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+  #  else
+  # echo "Wkhtmltopdf isn't installed due to the choice of the user!"
+  # fi
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
