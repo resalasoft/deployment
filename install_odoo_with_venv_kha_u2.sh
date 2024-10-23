@@ -98,8 +98,8 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
+# if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+# echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
