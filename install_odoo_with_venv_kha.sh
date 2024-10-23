@@ -100,30 +100,31 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 14 ----"
-###  WKHTMLTOPDF download links
-## === Ubuntu Focal x64 === (for other distributions please replace this link,
-## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
-## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
+  echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 17 ----"
+  ###  WKHTMLTOPDF download links
+  ## === Ubuntu Jammy x64 === (for other distributions please replace this link,
+  ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
+  ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
+  ## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
 
-sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfonts-base libxext6 libssl3 -y
-sudo apt-get install fontconfig
-sudo apt-get install -f
+  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+  #  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
- sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+  sudo wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+  sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
 
-# For ARM Architecture 
-  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-  
+  # For ARM Architecture 
+    # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+    # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+
+
   sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
-   else
-  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-  fi
+  else
+echo "Wkhtmltopdf isn't installed due to the choice of the user!"
+fi
+  
   
 #--------------------------------------------------
 # Install Python Dependencies
