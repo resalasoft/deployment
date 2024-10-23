@@ -35,9 +35,9 @@ IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
-OE_SUPERADMIN="admin"
+OE_SUPERADMIN="admin@admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
-GENERATE_RANDOM_PASSWORD="True"
+GENERATE_RANDOM_PASSWORD="false"
 OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="je-x.resalasoft.com"
@@ -85,10 +85,10 @@ timedatectl
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt update
-sudo apt install -y postgresql
+#echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
+#wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+#sudo apt update
+sudo apt install -y postgresql-12
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -112,7 +112,7 @@ sudo apt-get install -f
 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
   sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
-  # sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
 
   # For ARM Architecture 
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 

@@ -35,9 +35,9 @@ IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
-OE_SUPERADMIN="admin"
+OE_SUPERADMIN="admin@admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
-GENERATE_RANDOM_PASSWORD="True"
+GENERATE_RANDOM_PASSWORD="false"
 OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="caia14.resalasoft.com"
@@ -84,12 +84,12 @@ timedatectl
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-echo -e "\n================ Install PostgreSQL Server =========================="
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt update
-sudo apt install -y postgresql
-sudo systemctl start postgresql && sudo systemctl enable postgresql
+# echo -e "\n================ Install PostgreSQL Server =========================="
+# echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
+# wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+# sudo apt update
+# sudo apt install -y postgresql-12
+# sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
@@ -107,12 +107,14 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
   sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
 
   # For ARM Architecture 
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+  # sudo apt install ./wkhtmltox_0.12.6-1.jammy_arm64.deb
   # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-
+  
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
