@@ -107,7 +107,7 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfonts-base libxext6 -y
+sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfonts-base libxext6 libssl3 -y
 sudo apt-get install fontconfig
 sudo apt-get install -f
 
