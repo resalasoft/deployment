@@ -157,8 +157,8 @@ apt --fix-broken install
 
 
 echo -e "\n============== Create ODOO system user ========================"
-sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
-#sudo adduser  $OE_USER --disabled-login --gecos 'ODOO' 
+#sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
+sudo adduser  $OE_USER --disabled-login --gecos 'ODOO' 
 
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo

@@ -157,6 +157,8 @@ sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
+sudo npm install -g rtlcss
+
 apt --fix-broken install
 
 
