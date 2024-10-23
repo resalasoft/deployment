@@ -202,7 +202,7 @@ source "$OE_HOME_VENV/bin/activate"
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 #sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
-sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.8/site-packages
+#sudo pip3 install -r /$OE_HOME_EXT/requirements.txt --target=$OE_HOME_VENV/lib/python3.8/site-packages
 
 
 if [ $IS_ENTERPRISE = "True" ]; then
@@ -504,4 +504,5 @@ if [ $INSTALL_NGINX = "True" ]; then
 fi
 echo -e "\n========================================================================="
 echo " now open nano /home/$OE_USER/.bashrc and add this line at the end of file // source /home/$OE_USER/venv/bin/activate \\ then sudo passwd $OE_USER"
+echo " now connect with $OE_USER and run pip3 install -r OE_USER/requirements.txt"
 echo " now open nano /etc/postgresql/17/main/postgresql.conf and uncomment 2 parameters log_rotation_age = 1d & log_truncate_on_rotation = on"
