@@ -35,9 +35,9 @@ IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
-OE_SUPERADMIN="admin"
+OE_SUPERADMIN="admin@admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
-GENERATE_RANDOM_PASSWORD="True"
+GENERATE_RANDOM_PASSWORD="false"
 OE_CONFIG="conf"
 # Set the website name
 WEBSITE_NAME="genz-s.com"
@@ -77,7 +77,7 @@ timedatectl
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-sudo apt install -y postgresql
+sudo apt install -y postgresql-14
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
