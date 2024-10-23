@@ -87,8 +87,9 @@ timedatectl
 echo -e "\n================ Install PostgreSQL Server =========================="
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+#curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
 sudo apt update
-sudo apt install -y postgresql
+sudo apt install -y postgresql-12
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -99,26 +100,25 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 14 ----"
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfonts-base -y
+sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfonts-base libxext6 -y
 sudo apt-get install fontconfig
 sudo apt-get install -f
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
-  # sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+ sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
-  # For ARM Architecture 
+# For ARM Architecture 
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  # sudo apt install ./wkhtmltox_0.12.6-1.jammy_arm64.deb
   # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
-
+  
+  sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else

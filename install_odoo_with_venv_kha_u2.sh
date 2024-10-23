@@ -40,7 +40,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="jx12.resalasoft.com"
+WEBSITE_NAME="jx122.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
 LONGPOLLING_PORT="8035"
@@ -84,12 +84,12 @@ timedatectl
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-echo -e "\n================ Install PostgreSQL Server =========================="
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt update
-sudo apt install -y postgresql
-sudo systemctl start postgresql && sudo systemctl enable postgresql
+# echo -e "\n================ Install PostgreSQL Server =========================="
+# echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
+# wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+# sudo apt update
+# sudo apt install -y postgresql-12
+# sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
@@ -106,18 +106,26 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+  # sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
 
   # For ARM Architecture 
   # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
   # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
 
-  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
-  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
-   else
-  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-  fi
+  # sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+  # sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+  #  else
+  # echo "Wkhtmltopdf isn't installed due to the choice of the user!"
+  # fi
+#--------------------------------------------------
+# Install Python Dependencies
+#--------------------------------------------------
+# echo -e "\n=================== Installing Python Dependencies ============================"
+# sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
+# libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev slapd ldap-utils tox lcov valgrind python3-testresources
+# apt --fix-broken install
+
 #--------------------------------------------------
 # Install Python Dependencies
 #--------------------------------------------------
