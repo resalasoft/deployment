@@ -111,12 +111,12 @@ sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfon
 sudo apt-get install fontconfig
 sudo apt-get install -f
 
-#   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
-#  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+ sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 
 # For ARM Architecture 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+  # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
   
   sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
