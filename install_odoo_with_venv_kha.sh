@@ -40,7 +40,7 @@ OE_SUPERADMIN="admin@admin"
 GENERATE_RANDOM_PASSWORD="false"
 OE_CONFIG="conf"
 # Set the website name
-WEBSITE_NAME="je-x.resalasoft.com"
+WEBSITE_NAME="je-x14.resalasoft.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 # Pattern 803+digit in last of OE_USER etc (odoo2 --> 8032  & odoo3 --> 8033 & odoo4 --> 8034)
 LONGPOLLING_PORT="8030"
@@ -110,14 +110,14 @@ sudo apt-get install libjpeg-turbo8 libjpeg-turbo8 libxrender1 xfonts-75dpi xfon
 sudo apt-get install fontconfig
 sudo apt-get install -f
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+  # sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
+  # sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
 
   # For ARM Architecture 
-  # sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
-  # sudo apt install ./wkhtmltox_0.12.6-1.jammy_arm64.deb
-  # sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_arm64.deb 
+  sudo apt install ./wkhtmltox_0.12.6-1.jammy_arm64.deb
+  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_arm64.deb
 
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
